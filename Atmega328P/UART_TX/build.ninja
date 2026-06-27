@@ -1,0 +1,16 @@
+cc = avr-gcc
+cflags = -Wall -Wall 
+
+mcu = atmega328p
+f_cpu = 16000000UL
+
+rule c_to_elf
+  command = $cc $cflags -mmcu=$mcu -DF_CPU=$f_cpu $in -o out/uart_tx.elf
+  description = Complie source files into object files
+
+rule elf_to_hex
+  command = avr-objcopy -O ihex -R .eeprom $in out/uart_tx.hex
+  description = Convert elf file to hex file
+
+build out/uart_tx.elf : c_to_elf src/uart_tx.c
+build out/uart_tx.hex : elf_to_hex out/uart_tx.elf

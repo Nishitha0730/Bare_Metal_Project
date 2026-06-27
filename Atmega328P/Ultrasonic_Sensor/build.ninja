@@ -1,0 +1,16 @@
+cc = avr-gcc
+cflags = -Wall -Wall 
+
+mcu = atmega328p
+f_cpu = 16000000UL
+
+rule c_to_elf
+  command = $cc $cflags -mmcu=$mcu -DF_CPU=$f_cpu $in -o out/ultrasonic.elf
+  description = Complie source files into object files
+
+rule elf_to_hex
+  command = avr-objcopy -O ihex -R .eeprom $in out/ultrasonic.hex
+  description = Convert elf file to hex file
+
+build out/ultrasonic.elf : c_to_elf src/ultrasonic.c
+build out/ultrasonic.hex : elf_to_hex out/ultrasonic.elf
